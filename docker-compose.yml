@@ -2,9 +2,20 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    image: mysql:5.7
+    container_name: db_mysql
     environment:
-      POSTGRES_HOST_AUTH_METHOD: 'trust'
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: django_app_tutorial
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+    - ./docker/db/data:/var/lib/mysql
+    - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    - ./docker/db/sql:/docker-entrypoint-initdb.d
+    ports:
+    - 3306:3306
   web:
     build: .
     command: python3 manage.py runserver 0.0.0.0:8000
